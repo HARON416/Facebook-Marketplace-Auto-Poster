@@ -1,4 +1,4 @@
-# 🚀 MONICAH - Facebook Marketplace Automation Tool
+# 🚀 MONICAH - Facebook Marketplace Auto Poster 
 
 A powerful Go-based automation tool that streamlines the process of posting items to Facebook Marketplace. Built with modern web automation using Rod browser library and featuring a beautiful CLI interface.
 
