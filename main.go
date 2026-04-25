@@ -1,120 +1,59 @@
 package main
 
 import (
-	"errors"
-	"math"
-	"math/rand"
-	"os"
+	"context"
+	"facebook-marketplace-listing-tool/utils"
+	"fmt"
+	"math/rand/v2"
 	"time"
-
-	l "github.com/charmbracelet/log"
-	"github.com/go-rod/rod"
-	u "github.com/kwandapchumba/thelazyfbposter/utils"
 )
 
 func main() {
-	url := "https://web.facebook.com/"
-	file := "requirements.txt"
-	var username, password, path, expiry string
-	var browser *rod.Browser
-	var page *rod.Page
-	var items []u.MarketplaceItem
+	browser, page := utils.Login()
+	defer browser.MustClose()
+	defer page.MustClose()
 
-	username, password, path, expiry, err := u.RetrieveRequirements(file)
+	itemsPath := "/home/kibet/Pictures/FACEBOOK/PHONES/MARKETPLACE"
+
+	fmt.Printf("Looking for items in %s\n", itemsPath)
+
+	items, err := utils.GetItems(itemsPath)
 	if err != nil {
-		switch {
-		case errors.Is(err, os.ErrNotExist):
-			username, password, path, err = u.GetRequirements()
-			if err != nil {
-				l.Error(err)
-				os.Exit(1)
-			}
-
-			expiry, err = u.SaveRequirements(username, password, path, file)
-			if err != nil {
-				l.Error(err)
-				os.Exit(1)
-			}
-		default:
-			l.Error(err)
-			os.Exit(1)
-		}
+		panic(err)
 	}
 
-	if username == "" || password == "" || path == "" || expiry == "" {
-		username, password, path, err = u.GetRequirements()
+	fmt.Printf("Found %d items to post\n", len(items))
+
+	ctx := context.Background()
+	rewriter, err := utils.NewGeminiDescriptionRewriter(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, item := range items {
+		fmt.Printf("Title: %s\nPrice: %s\nCategory: %s\nCondition: %s\nDescription: %s\nTags: %v\nImages: %v\n\n",
+			item.Title, item.Price, item.Category, item.Condition, item.Description, item.Tags, item.Images)
+
+		description, err := rewriter.Rewrite(ctx, item.Description)
 		if err != nil {
-			l.Error(err)
-			os.Exit(1)
+			fmt.Printf("Gemini rewrite failed for %s, using original description: %v\n", item.Title, err)
+			description = item.Description
 		}
 
-		expiry, err = u.SaveRequirements(username, password, path, file)
+		fmt.Println("============================================")
+		fmt.Printf("Rewritten Description: %s\n\n", description)
+		fmt.Println("============================================")
+
+		item.Description = description
+
+		err = utils.PostItemsToMarketplace(browser, page, []utils.Item{item})
 		if err != nil {
-			l.Error(err)
-			os.Exit(1)
+			fmt.Printf("Failed to post %s: %v\n", item.Title, err)
+		} else {
+			fmt.Printf("Successfully posted %s\n", item.Title)
 		}
+
+		// Sleep for a random duration between 5 and 15 seconds to mimic human behavior
+		time.Sleep(time.Duration(rand.IntN(10)+5) * time.Second)
 	}
-
-	parsedTime, err := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", expiry)
-	if err != nil {
-		l.Error("Error parsing time", "err", err)
-		return
-	}
-
-	elapsedTime := time.Since(parsedTime)
-
-	if elapsedTime > 72*time.Hour {
-		l.Warn("Your free trial has ended. Please contact support to upgrade")
-		os.Exit(1)
-	}
-
-	browser, page = u.Login(username, password, url)
-
-	items, err = u.GetItemsForMarketplace(path)
-	if err != nil {
-		switch {
-		case errors.Is(err, os.ErrNotExist):
-			l.Warn("Path does not exist")
-			_, err = u.UpdatePath(file)
-			if err != nil {
-				l.Error(err)
-				os.Exit(1)
-			}
-
-			l.Warn("Rerun the program")
-			os.Exit(1)
-		default:
-			l.Error(err)
-			os.Exit(1)
-		}
-	}
-
-	totalItems := len(items)
-
-	if totalItems < 1 {
-		l.Info("No items found in the parent directory")
-		os.Exit(1)
-	}
-
-	l.Info("Do not close this window")
-
-	start := time.Now()
-
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	r.Shuffle(len(items), func(i, j int) {
-		items[i], items[j] = items[j], items[i]
-	})
-
-	l.Info("Items shuffled")
-
-	err = u.PostItemsToMarketplace(browser, page, items)
-	if err != nil {
-		l.Error(err)
-		os.Exit(1)
-	}
-
-	duration := math.Round(time.Since(start).Minutes())
-
-	l.Infof("ALL ITEMS LISTED IN %f MINUTES", duration)
 }

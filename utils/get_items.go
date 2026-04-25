@@ -3,12 +3,13 @@ package utils
 import (
 	"bufio"
 	"fmt"
+	"math/rand/v2"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-type MarketplaceItem struct {
+type Item struct {
 	Images      []string
 	Title       string
 	Price       string
@@ -18,8 +19,8 @@ type MarketplaceItem struct {
 	Tags        []string
 }
 
-func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
-	var items []MarketplaceItem
+func GetItems(path string) ([]Item, error) {
+	var items []Item
 
 	entries, err := os.ReadDir(path)
 	if err != nil {
@@ -28,7 +29,7 @@ func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
 
 	for _, entry := range entries {
 		subDir := filepath.Join(path, entry.Name())
-		detailsFile := filepath.Join(subDir, "details.txt")
+		detailsFile := filepath.Join(subDir, "description.txt")
 
 		// Read images from the subdirectory
 		subEntries, err := os.ReadDir(subDir)
@@ -44,7 +45,14 @@ func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
 			}
 		}
 
-		// Read details.txt for title, price, description
+		rand.Shuffle(len(imageFiles), func(i, j int) {
+			imageFiles[i], imageFiles[j] = imageFiles[j], imageFiles[i]
+		})
+		if len(imageFiles) > 6 {
+			imageFiles = imageFiles[:6]
+		}
+
+		// Read description.txt for title, price, description
 		file, err := os.Open(detailsFile)
 		if err != nil {
 			continue // Handle error as needed
@@ -53,23 +61,43 @@ func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
 
 		// Initialize variables to hold the extracted fields
 		var title, price, category, condition, description, tagsString string
+		var descriptionLines []string
+		inDescription := false
 
 		// Create a new scanner to read the file line by line
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			line := scanner.Text()
 
+			if inDescription {
+				switch {
+				case strings.HasPrefix(line, "tags:"):
+					tagsString = strings.TrimSpace(line[len("tags:"):])
+					inDescription = false
+					continue
+				case strings.HasPrefix(line, "title:"),
+					strings.HasPrefix(line, "price:"),
+					strings.HasPrefix(line, "category:"),
+					strings.HasPrefix(line, "condition:"):
+					inDescription = false
+				default:
+					descriptionLines = append(descriptionLines, line)
+					continue
+				}
+			}
+
 			switch {
 			case strings.HasPrefix(line, "title:"):
 				title = strings.ToUpper(strings.TrimSpace(line[len("title:"):]))
 			case strings.HasPrefix(line, "price:"):
 				price = strings.TrimSpace(line[len("price:"):])
-			case strings.HasPrefix(line, "category"):
+			case strings.HasPrefix(line, "category:"):
 				category = strings.ToLower(strings.TrimSpace(line[len("category:"):]))
-			case strings.HasPrefix(line, "condition"):
+			case strings.HasPrefix(line, "condition:"):
 				condition = strings.ToLower(strings.TrimSpace(line[len("condition:"):]))
 			case strings.HasPrefix(line, "description:"):
-				description = strings.ToUpper(strings.TrimSpace(line[len("description:"):]))
+				descriptionLines = []string{strings.TrimSpace(line[len("description:"):])}
+				inDescription = true
 			case strings.HasPrefix(line, "tags:"):
 				tagsString = strings.TrimSpace(line[len("tags:"):])
 			}
@@ -80,16 +108,7 @@ func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
 			return nil, fmt.Errorf("error reading file: %v", err)
 		}
 
-		// Split the text by "..."
-		parts := strings.Split(description, "...")
-
-		// Trim spaces from each part
-		for i := range parts {
-			parts[i] = "✅ " + strings.TrimSpace(parts[i])
-		}
-
-		// Join the parts with "...\n"
-		description = strings.Join(parts, "\n\n")
+		description = strings.Join(descriptionLines, "\n")
 
 		tags := strings.Split(tagsString, ",")
 
@@ -102,7 +121,7 @@ func GetItemsForMarketplace(path string) ([]MarketplaceItem, error) {
 		}
 
 		// Create a PostContent instance and append to slice
-		items = append(items, MarketplaceItem{
+		items = append(items, Item{
 			Images:      imageFiles,
 			Title:       title,
 			Price:       price,

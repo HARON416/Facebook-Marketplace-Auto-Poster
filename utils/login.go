@@ -1,27 +1,45 @@
 package utils
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 )
 
-func Login(username, password, url string) (*rod.Browser, *rod.Page) {
-	dir := "~/.config/google-chrome"
+func Login() (*rod.Browser, *rod.Page) {
 
-	u := launcher.New().UserDataDir(dir).Leakless(true).NoSandbox(true).Headless(false).MustLaunch()
+	url := "https://web.facebook.com/"
+
+	u := launcher.NewUserMode().
+		Leakless(true).
+		NoSandbox(true).
+		Headless(false).
+		Devtools(false).
+		UserDataDir("~/.config/google-chrome").
+		Set("disable-notifications").
+		MustLaunch()
 
 	browser := rod.New().ControlURL(u).MustConnect().NoDefaultDevice()
 
-	page := browser.MustPage(url).MustWaitLoad().MustWindowMaximize()
+	page := browser.MustPage(url).MustWindowMaximize().MustWaitLoad().MustWaitDOMStable()
 
-	if page.MustHas(`button[name="login"]`) {
-		page.MustElement(`input[name="email"]`).MustInput(username)
-		page.MustElement(`input[name="pass"]`).MustInput(password)
-		page.MustElement(`button[type="submit"]`).MustClick()
-		time.Sleep(1 * time.Minute)
+	fmt.Println("⏳ Initializing Facebook login")
+
+	if !page.MustHas(`div[aria-label="Your profile"]`) {
+		fmt.Println("⏳ Login to Facebook in the browser window opened by this tool. You have 3 minutes to complete the login.")
+
+		for i := 180; i > 0; i-- {
+			mins := i / 60
+			secs := i % 60
+			fmt.Printf("\rTime remaining: %02d:%02d", mins, secs)
+			time.Sleep(1 * time.Second)
+		}
+		fmt.Println("\rTime remaining: 00:00")
 	}
+
+	fmt.Println("✅ Login successful")
 
 	return browser, page
 }

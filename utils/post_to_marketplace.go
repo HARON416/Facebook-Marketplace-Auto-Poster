@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"strings"
 	"time"
@@ -12,7 +12,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
-func PostItemsToMarketplace(browser *rod.Browser, page *rod.Page, items []MarketplaceItem) error {
+func PostItemsToMarketplace(browser *rod.Browser, page *rod.Page, items []Item) error {
 	defer browser.MustClose()
 
 	for _, i := range items {
@@ -98,7 +98,7 @@ func PostItemsToMarketplace(browser *rod.Browser, page *rod.Page, items []Market
 		// select suggested groups
 		groups := page.MustElements(`div[role="checkbox"]`)
 		log.Infof("ALL GROUPS: %v", len(groups))
-		var tickedGroups int = 0
+		tickedGroups := 0
 		for _, group := range groups {
 			group.MustClick()
 			time.Sleep(100 * time.Millisecond)
@@ -121,7 +121,7 @@ func PostItemsToMarketplace(browser *rod.Browser, page *rod.Page, items []Market
 func waitForNextPage(page *rod.Page, timeoutSeconds int) {
 	maxRetries := timeoutSeconds / 3 // Convert timeout to retry count
 
-	for i := 0; i < maxRetries; i++ {
+	for i := range maxRetries {
 		currentURL := page.MustInfo().URL
 
 		if strings.Contains(currentURL, "/marketplace/create/item?step=audience") {
@@ -141,7 +141,7 @@ func waitForPostButton(page *rod.Page) {
 	maxRetries := 60 // Max retries (2 seconds per retry → 120 seconds)
 	var postButton *rod.Element
 
-	for i := 0; i < maxRetries; i++ {
+	for range maxRetries {
 		// Re-fetch the button in each iteration
 		postButton = page.MustElement(`div[aria-label="Publish"]`)
 		if postButton == nil {
@@ -168,7 +168,7 @@ func waitForPostButton(page *rod.Page) {
 func waitForPublishing(page *rod.Page, title string) {
 	maxRetries := 60 // (2 seconds per retry → 120 seconds total)
 
-	for i := 0; i < maxRetries; i++ {
+	for i := range maxRetries {
 		currentURL := page.MustInfo().URL
 
 		// First, check if the item was published
@@ -196,6 +196,5 @@ func returnRandomFloat(min, max float64) float64 {
 	if min > max {
 		min, max = max, min
 	}
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return min + r.Float64()*(max-min)
+	return min + rand.Float64()*(max-min)
 }

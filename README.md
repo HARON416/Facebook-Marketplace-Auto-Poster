@@ -1,263 +1,140 @@
-# 🚀 MONICAH - Facebook Marketplace Auto Poster 
+# MONICAH - Facebook Marketplace Auto Poster / Facebook Marketplace Listing Tool / Facebook Marketplace Listing Software
 
-A powerful Go-based automation tool that streamlines the process of posting items to Facebook Marketplace. Built with modern web automation using Rod browser library and featuring a beautiful CLI interface.
+MONICAH helps you post item-for-sale listings to Facebook Marketplace from product folders on your computer. Each folder represents one item, with photos and a simple `description.txt` file.
 
-## ✨ Features
+This tool is built for local-folder posting. It does not pull listings from websites by default, and it is not for rentals, vehicles, or real estate unless customized.
 
-- **🔐 Secure Authentication**: Secure Facebook login with credential management
-- **📦 Batch Processing**: Automatically process multiple items from organized folders
-- **🖼️ Image Upload**: Seamless image upload support for product listings
-- **📝 Smart Content Parsing**: Automatic parsing of product details from structured files
-- **⏱️ Intelligent Timing**: Random delays between posts to avoid rate limiting
-- **🎯 Group Targeting**: Automatic selection of relevant Facebook groups
-- **🔄 Trial Management**: Built-in trial period management system
-- **📊 Progress Tracking**: Real-time logging and progress monitoring
+## What It Does
 
-## 🏗️ Architecture
+- Opens Chrome and lets you log in to Facebook.
+- Reads items from folders on your computer.
+- Uploads up to 6 random photos per item. You can change the number of selected photos in `utils/get_items.go
+- Reads title, price, category, condition, description, and tags.
+- Rewrites descriptions with Gemini so they are concise and clear.
+- Keeps your WhatsApp phone number in the listing description.
+- Posts each item to Facebook Marketplace with delays between posts.
 
-### Core Components
+## What You Need
 
-```
-MONICAH/
-├── main.go                 # Application entry point
-├── makefile               # Build and run commands
-├── go.mod                 # Go module dependencies
-├── utils/                 # Core functionality modules
-│   ├── login.go          # Facebook authentication
-│   ├── getrequirements.go # User input collection
-│   ├── saverequirements.go # Credential persistence
-│   ├── retrieverequirements.go # Credential retrieval
-│   ├── getitemsformarketplace.go # Product data parsing
-│   ├── posttomarketplace.go # Marketplace posting automation
-│   └── updatepath.go     # Path management
-└── .gitignore            # Git ignore rules
+- A Facebook account with Marketplace access.
+- Google Chrome installed.
+- Go installed on your computer.
+- A Gemini API key saved in a `.env` file.
+- Your product photos and descriptions arranged in folders.
+
+## Setup
+
+Create a `.env` file in the project folder:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-## 🚀 Quick Start
+Install the project dependencies:
 
-### Prerequisites
-
-- Go 1.23.4 or higher
-- Google Chrome browser
-- Facebook account
-
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone <repository-url>
-   cd MONICAH
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   make tidy
-   ```
-
-3. **Run the application**
-   ```bash
-   make run
-   ```
-
-## 📁 Project Structure Setup
-
-### Product Organization
-
-Organize your products in the following structure:
-
-```
-products/
-├── product1/
-│   ├── image1.jpg
-│   ├── image2.jpg
-│   └── details.txt
-├── product2/
-│   ├── image1.jpg
-│   └── details.txt
-└── product3/
-    ├── image1.jpg
-    ├── image2.jpg
-    └── details.txt
+```bash
+make tidy
 ```
 
-### Details.txt Format
+## Prepare Your Items
 
-Each product folder should contain a `details.txt` file with the following format:
+Create one folder for each item you want to post.
+
+Example:
 
 ```txt
-title: Your Product Title
-price: $99.99
-category: electronics
-condition: new
-description: This is a detailed description of your product... You can use multiple sentences... Each sentence will be formatted with checkmarks...
-tags: electronics, gadget, tech, wireless
+MARKETPLACE/
+├── iphone-13/
+│   ├── photo1.jpg
+│   ├── photo2.jpg
+│   └── description.txt
+├── samsung-a54/
+│   ├── front.jpg
+│   ├── back.jpg
+│   └── description.txt
+└── laptop/
+    ├── image1.jpg
+    ├── image2.jpg
+    └── description.txt
 ```
 
-## 🔧 Configuration
+Each item folder must contain a `description.txt` file.
 
-### First Run Setup
+Example `description.txt`:
 
-On first run, the application will prompt for:
+```txt
+description: ✅ LIPA MDOGO MDOGO
+✅ SAMSUNG GALAXY NOTE 20 ULTRA
+✅ DEPOSIT: KSH. 11,199
+✅ WEEKLY: KSH. 1,370
+✅ FIRST WEEK FREE
+✅ LOCATION: PIONEER BUILDING, KIMATHI STREET, 5TH FLOOR, SHOP #2
+✅ NAIROBI AND ITS ENVIRONS ONLY. FREE DELIVERY. PAY AFTER DELIVERY
+✅ AGENT CODE: 514 SHULEM PHONES AND ACCESSORIES
+✅ CALL/WHATSAPP 0️⃣7️⃣1️⃣8️⃣4️⃣4️⃣8️⃣4️⃣6️⃣1️⃣
+title: SAMSUNG GALAXY NOTE 20 ULTRA LIPA MDOGO MDOGO
+price: 11199
+category: Mobile phones
+condition: New
+tags: lipa mdogo mdogo smartphones, samsung lipa mdogo mdogo, iphone lipa mdogo mdogo, lipa pole pole smartphones, smartphones nairobi
+```
 
-1. **Facebook Username/Email**
-2. **Facebook Password** (hidden input)
-3. **Path to products folder**
+Multiline descriptions are supported. The description starts at `description:` and continues until the next field such as `title:`, `price:`, `category:`, `condition:`, or `tags:`.
 
-Credentials are securely stored in `requirements.txt` for future use.
+## Choose Your Product Folder
 
-### Trial Period
+Open `main.go` and update this line to point to your own folder:
 
-The application includes a 72-hour trial period. After expiration, contact support for upgrade options.
+```go
+itemsPath := "/home/kibet/Pictures/FACEBOOK/PHONES/MARKETPLACE"
+```
 
-## 🛠️ Usage
+Use the folder that contains all your item folders.
 
-### Running the Application
+## Run The Poster
+
+Start the app:
 
 ```bash
 make run
 ```
 
-### Available Commands
+Chrome will open. If you are not already logged in, log in to Facebook in the browser window. After that, the app will read your folders and begin posting your items.
 
-- `make run` - Run the application
-- `make tidy` - Clean and update Go dependencies
+## Important Notes
 
-## 🔒 Security Features
+- This currently works only for normal Facebook Marketplace items for sale.
+- Listings must come from local folders on your computer.
+- Facebook Marketplace layouts can change, so the script may need adjustment over time.
+- The app uses your existing Chrome session and does not save your Facebook password.
+- If Gemini fails to rewrite a description, the original description is used.
+- Only up to 6 photos are selected per item, randomly shuffled from the item folder.
+- You can change the number of selected photos in `utils/get_items.go`.
+- You can change the random sleep time between posts in `main.go`.
+- Suggested groups are auto-selected by default. You can disable this in `utils/post_to_marketplace.go`.
 
-- **Credential Encryption**: Passwords are stored securely
-- **Session Management**: Automatic browser session handling
-- **Rate Limiting**: Intelligent delays between posts
-- **Error Handling**: Comprehensive error management
+## Customization
 
-## 📊 How It Works
+Need a version made for your business or listing style? Custom scripts are available for:
 
-### 1. Authentication Flow
+- Vehicle listings.
+- Item listings.
+- Real estate listings.
+- Listings from local folders.
+- Listings from online sources, for example a vehicle dealership website to Facebook Marketplace.
 
-```go
-// Secure Facebook login with Rod browser automation
-browser, page = u.Login(username, password, url)
+For customization, contact:
+
+- Email: haronkibetrutoh@gmail.com
+- WhatsApp: +254718448461
+
+## Commands
+
+```bash
+make run
+make tidy
 ```
 
-### 2. Product Processing
-
-```go
-// Parse product details from organized folders
-items, err = u.GetItemsForMarketplace(path)
-```
-
-### 3. Marketplace Automation
-
-```go
-// Automated posting with intelligent timing
-err = u.PostItemsToMarketplace(browser, page, items)
-```
-
-### 4. Smart Features
-
-- **Random Shuffling**: Products are randomly shuffled before posting
-- **Intelligent Delays**: 30-60 second random delays between posts
-- **Group Selection**: Automatic selection of relevant Facebook groups
-- **Progress Monitoring**: Real-time logging of all operations
-
-## 🎯 Key Features Explained
-
-### Product Parsing
-
-- Automatically reads product images from folders
-- Parses structured `details.txt` files
-- Formats descriptions with checkmarks for better presentation
-- Handles multiple images per product
-
-### Marketplace Integration
-
-- Navigates to Facebook Marketplace create item page
-- Uploads multiple images per product
-- Fills all required fields (title, price, category, condition, description, tags)
-- Handles category and condition selection from dropdowns
-- Manages product tags with Enter key simulation
-
-### Error Handling
-
-- Detects rate limiting and posting limits
-- Handles network errors gracefully
-- Validates file paths and product data
-- Provides clear error messages and recovery options
-
-## 🔧 Technical Details
-
-### Dependencies
-
-- **github.com/go-rod/rod**: Modern browser automation
-- **github.com/charmbracelet/log**: Beautiful CLI logging
-- **golang.org/x/term**: Secure password input
-
-### Browser Automation
-
-Uses Rod browser library for:
-
-- Chrome browser automation
-- Headless/headed mode support
-- Element interaction and form filling
-- File upload handling
-- Navigation and page waiting
-
-### Performance Features
-
-- **Concurrent Processing**: Efficient handling of multiple products
-- **Memory Management**: Proper browser cleanup and resource management
-- **Timeout Handling**: Intelligent retry mechanisms
-- **Progress Tracking**: Real-time operation logging
-
-## 🚨 Important Notes
-
-### Geographic Limitations
-
-- **Marketplace Layout Variations**: Facebook Marketplace layout and functionality vary significantly by country
-- **Current Compatibility**: This tool is optimized for Kenya and similar markets
-- **US/Other Countries**: May not work properly in the United States or other countries due to different marketplace layouts
-- **Customization Available**: Contact the developer for country-specific customizations and adaptations
-
-### Rate Limiting
-
-- Facebook has posting limits to prevent spam
-- The tool includes intelligent delays to avoid detection
-- Monitor for "Limit reached" messages
-
-### Browser Requirements
-
-- Requires Google Chrome browser
-- Uses Chrome user data directory for session persistence
-- Supports both headless and headed modes
-
-### File Structure Requirements
-
-- Products must be organized in folders
-- Each folder must contain a `details.txt` file
-- Images should be in common formats (jpg, png, etc.)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
+## License
 
 This project is proprietary software. All rights reserved.
-
-## 🆘 Support
-
-For support, licensing inquiries, and country-specific customizations, please contact:
-
-- **Email**: haronkibetrutoh@gmail.com
-- **WhatsApp**: +254718448461
-
-We provide customizations for different countries where Facebook Marketplace layouts may vary.
-
----
-
-**⚠️ Disclaimer**: This tool is for educational and legitimate business use only. Users are responsible for complying with Facebook's Terms of Service and applicable laws.
