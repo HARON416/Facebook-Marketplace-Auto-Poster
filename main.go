@@ -41,7 +41,7 @@ func main() {
 		}
 
 		fmt.Println("============================================")
-		fmt.Printf("Rewritten Description: %s\n\n", description)
+		fmt.Printf("GEMINI AI DESCRIPTION: %s\n\n", description)
 		fmt.Println("============================================")
 
 		item.Description = description
@@ -49,6 +49,8 @@ func main() {
 		utils.CreateListing(page, item)
 
 		// Sleep for a random duration between 5 and 15 seconds to mimic human behavior
-		time.Sleep(time.Duration(rand.IntN(10)+5) * time.Second)
+		duration := time.Duration(rand.IntN(10)+5) * time.Second
+		fmt.Printf("Sleeping for %v before posting the next item...\n", duration)
+		time.Sleep(duration)
 	}
 }
