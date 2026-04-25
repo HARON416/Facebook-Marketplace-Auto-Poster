@@ -52,6 +52,10 @@ Rules:
 - Return only the rewritten description.
 - Keep important product details.
 - Do not invent details.
+- Always make the description easy to scan using short lines and natural paragraph breaks instead of one wall of text.
+- Use a few appropriate, persuasive emojis where they make the listing feel more engaging.
+- Do not use Markdown formatting, asterisks, bullet symbols, or decorative separator symbols.
+- Keep emojis natural and relevant; do not overuse them.
 - Keep this phone number exactly as written: %s
 - If the phone number is present, do not change its emoji format.
 - If the phone number is missing, include it once at the end.
