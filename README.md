@@ -1,6 +1,6 @@
-# MONICAH
+# MONICAH - Facebook Marketplace Listing Tool | Facebook Marketplace Listing Software | Facebook Marketplace Auto Poster |
 
-**Facebook Marketplace Auto Poster for item-for-sale listings.**
+**Facebook Marketplace Auto Poster for item-for-sale Listings.**
 
 MONICAH helps you post Facebook Marketplace items from folders on your computer. Put each product in its own folder, add photos plus a `description.txt` file, and the tool opens Chrome, fills the Marketplace form, uploads images, and posts the item.
 
@@ -8,14 +8,14 @@ MONICAH helps you post Facebook Marketplace items from folders on your computer.
 
 ## At A Glance
 
-| Feature | What it means |
-| --- | --- |
-| Local folders | Each product lives in its own folder on your computer. |
-| Photo upload | Up to 6 random photos are selected per item by default. |
+| Feature             | What it means                                            |
+| ------------------- | -------------------------------------------------------- |
+| Local folders       | Each product lives in its own folder on your computer.   |
+| Photo upload        | Up to 6 random photos are selected per item by default.  |
 | Description cleanup | Gemini can rewrite descriptions to be concise and clear. |
-| Phone retention | The WhatsApp number is kept in emoji format. |
-| Chrome session | Uses your existing Chrome login session. |
-| Group posting | Suggested groups are auto-selected by default. |
+| Phone retention     | The WhatsApp number is kept in emoji format.             |
+| Chrome session      | Uses your existing Chrome login session.                 |
+| Group posting       | Suggested groups are auto-selected by default.           |
 
 ## What You Need
 
@@ -103,13 +103,13 @@ The description can be multiple lines. It starts at `description:` and continues
 
 ## What Can Be Changed
 
-| Setting | Where to change it |
-| --- | --- |
-| Product folder path | `main.go` |
-| Random sleep time between posts | `main.go` |
-| Number of selected photos | `utils/get_items.go` |
-| Suggested group auto-selection | `utils/post_to_marketplace.go` |
-| Gemini rewrite prompt and timeout | `utils/gemini.go` |
+| Setting                           | Where to change it             |
+| --------------------------------- | ------------------------------ |
+| Product folder path               | `main.go`                      |
+| Random sleep time between posts   | `main.go`                      |
+| Number of selected photos         | `utils/get_items.go`           |
+| Suggested group auto-selection    | `utils/post_to_marketplace.go` |
+| Gemini rewrite prompt and timeout | `utils/gemini.go`              |
 
 ## Important Notes
 
