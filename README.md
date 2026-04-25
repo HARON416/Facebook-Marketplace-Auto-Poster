@@ -103,13 +103,13 @@ The description can be multiple lines. It starts at `description:` and continues
 
 ## What Can Be Changed
 
-| Setting                           | Where to change it             |
-| --------------------------------- | ------------------------------ |
-| Product folder path               | `main.go`                      |
-| Random sleep time between posts   | `main.go`                      |
-| Number of selected photos         | `utils/get_items.go`           |
-| Suggested group auto-selection    | `utils/post_to_marketplace.go` |
-| Gemini rewrite prompt and timeout | `utils/gemini.go`              |
+| Setting                           | Where to change it        |
+| --------------------------------- | ------------------------- |
+| Product folder path               | `main.go`                 |
+| Random sleep time between posts   | `main.go`                 |
+| Number of selected photos         | `utils/get_items.go`      |
+| Suggested group auto-selection    | `utils/create_listing.go` |
+| Gemini rewrite prompt and timeout | `utils/gemini.go`         |
 
 ## Important Notes
 

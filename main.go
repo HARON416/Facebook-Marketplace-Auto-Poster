@@ -46,12 +46,7 @@ func main() {
 
 		item.Description = description
 
-		err = utils.PostItemsToMarketplace(browser, page, []utils.Item{item})
-		if err != nil {
-			fmt.Printf("Failed to post %s: %v\n", item.Title, err)
-		} else {
-			fmt.Printf("Successfully posted %s\n", item.Title)
-		}
+		utils.CreateListing(page, item)
 
 		// Sleep for a random duration between 5 and 15 seconds to mimic human behavior
 		time.Sleep(time.Duration(rand.IntN(10)+5) * time.Second)
