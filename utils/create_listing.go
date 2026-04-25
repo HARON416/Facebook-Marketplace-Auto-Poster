@@ -40,26 +40,17 @@ func CreateListing(page *rod.Page, i Item, listingIndex int) {
 			label.MustInput(i.Price)
 			Logger.Info("PRICE INSERTED", "PRICE", i.Price)
 		case "category":
-			label.MustClick()
-			time.Sleep(1 * time.Second)
-			options := page.MustElements(`div[data-visualcompletion="ignore-dynamic"]`)
-			for _, option := range options {
-				if strings.Contains(strings.ToLower(option.MustText()), i.Category) {
-					option.MustClick()
-					break
-				}
-			}
+			selectDrawerOption(page, label, i.Category, "CATEGORY", []string{
+				`div[role="button"][tabindex="0"]`,
+				`div[role="button"]`,
+			})
 			Logger.Info("CATEGORY INSERTED", "CATEGORY", i.Category)
 		case "condition":
-			label.MustClick()
-			time.Sleep(1 * time.Second)
-			options := page.MustElements(`div[role="option"]`)
-			for _, option := range options {
-				if strings.ToLower(option.MustText()) == i.Condition {
-					option.MustClick()
-					break
-				}
-			}
+			selectDrawerOption(page, label, i.Condition, "CONDITION", []string{
+				`div[role="option"]`,
+				`div[role="button"][tabindex="0"]`,
+				`div[role="button"]`,
+			})
 			Logger.Info("CONDITION INSERTED", "CONDITION", i.Condition)
 		case "description":
 			label.MustInput(i.Description)
@@ -207,6 +198,75 @@ func waitForPublishing(page *rod.Page, title string) {
 	}
 
 	Logger.Warn("TIMEOUT REACHED WHILE PUBLISHING ITEM")
+}
+
+func selectDrawerOption(page *rod.Page, trigger *rod.Element, value string, fieldName string, selectors []string) {
+	normalizedValue := strings.ToLower(strings.TrimSpace(value))
+	trigger.MustClick()
+	time.Sleep(1 * time.Second)
+
+	for attempt := 0; attempt < 5; attempt++ {
+		for _, selector := range selectors {
+			if clickMatchingOption(page, selector, normalizedValue, value, fieldName) {
+				return
+			}
+		}
+
+		Logger.Info("WAITING FOR DRAWER OPTIONS", "FIELD", fieldName, "TARGET", value, "ATTEMPT", attempt+1)
+		time.Sleep(500 * time.Millisecond)
+	}
+
+	panic("failed to select " + fieldName + ": " + value)
+}
+
+func clickMatchingOption(page *rod.Page, selector string, normalizedValue string, rawValue string, fieldName string) bool {
+	options := page.MustElements(selector)
+	if len(options) == 0 {
+		return false
+	}
+
+	for _, option := range options {
+		optionText := normalizeOptionText(option.MustText())
+		if optionText == "" {
+			continue
+		}
+
+		if optionText == normalizedValue {
+			Logger.Info("MATCHED DRAWER OPTION", "FIELD", fieldName, "TARGET", rawValue, "SELECTOR", selector, "OPTION_TEXT", option.MustText())
+			option.MustClick()
+			time.Sleep(500 * time.Millisecond)
+			return true
+		}
+	}
+
+	for _, option := range options {
+		optionText := normalizeOptionText(option.MustText())
+		if optionText == "" || !strings.Contains(optionText, normalizedValue) {
+			continue
+		}
+
+		Logger.Info("MATCHED DRAWER OPTION", "FIELD", fieldName, "TARGET", rawValue, "SELECTOR", selector, "OPTION_TEXT", option.MustText())
+		option.MustClick()
+		time.Sleep(500 * time.Millisecond)
+		return true
+	}
+
+	return false
+}
+
+func normalizeOptionText(text string) string {
+	text = strings.ToLower(strings.TrimSpace(text))
+	if text == "" {
+		return ""
+	}
+
+	lines := strings.Split(text, "\n")
+	primary := strings.TrimSpace(lines[0])
+	if primary != "" {
+		return primary
+	}
+
+	return text
 }
 
 func returnRandomFloat(min, max float64) float64 {
