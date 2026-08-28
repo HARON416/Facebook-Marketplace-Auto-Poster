@@ -1,5 +1,7 @@
 # MONICAH - Facebook Marketplace Listing Tool | Facebook Marketplace Listing Software | Facebook Marketplace Auto Poster |
 
+> **Looking for a Chrome extension?** Try [KundiPost – Facebook Groups & Marketplace Auto Poster](https://chromewebstore.google.com/detail/kundipost-%E2%80%93-facebook-grou/lphjckpophfkedacijahclaoenhikcgo) to save and reuse posts and listings, publish to Facebook Groups and Marketplace with paced queues, optionally rewrite content with Gemini, and clean up old Marketplace listings—all from a Chrome side panel.
+
 **Facebook Marketplace Auto Poster for item-for-sale Listings.**
 
 MONICAH helps you post Facebook Marketplace items from folders on your computer. Put each product in its own folder, add photos plus a `description.txt` file, and the tool opens Chrome, fills the Marketplace form, uploads images, and posts the item.
