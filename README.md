@@ -1,5 +1,7 @@
 # MONICAH - Facebook Marketplace Listing Tool | Facebook Marketplace Listing Software | Facebook Marketplace Auto Poster |
 
+> **IMPORTANT!!! Auto dealerships and sales teams:** Tired of manually re-listing inventory on Facebook Marketplace? Our Chrome extension posts vehicles from your dealership website in one click—whether it is a single unit or your whole lot. Trusted by Steve Marshall Group, Mainland Motors, Applewood, Tricity Mitsubishi, and more. Want a quick demo? [Message me on WhatsApp](https://wa.me/254718448461) or [send me an email](mailto:haronkibetrutoh@gmail.com).
+
 > **Looking for a Chrome extension?** Try [KundiPost – Facebook Groups & Marketplace Auto Poster](https://chromewebstore.google.com/detail/kundipost-%E2%80%93-facebook-grou/lphjckpophfkedacijahclaoenhikcgo) to save and reuse posts and listings, publish to Facebook Groups and Marketplace with paced queues, optionally rewrite content with Gemini, and clean up old Marketplace listings—all from a Chrome side panel.
 
 **Facebook Marketplace Auto Poster for item-for-sale Listings.**
@@ -134,8 +136,8 @@ Custom versions are available for:
 
 For customization, contact:
 
-- Email: haronkibetrutoh@gmail.com
-- WhatsApp: +254718448461
+- Email: [haronkibetrutoh@gmail.com](mailto:haronkibetrutoh@gmail.com)
+- WhatsApp: [+254 718 448 461](https://wa.me/254718448461)
 
 ## Commands
 
