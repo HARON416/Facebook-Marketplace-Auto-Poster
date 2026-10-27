@@ -8,7 +8,11 @@ Whether you sell phones, electronics, furniture, or other products, Facebook Mar
 >
 > - 🚗 **Auto dealerships and sales teams** — Tired of manually re-listing vehicle inventory? I built a Chrome extension that posts vehicles directly from your dealership website in one click—one unit or your whole lot. Trusted by Steve Marshall Group, Mainland Motors, Applewood, Tricity Mitsubishi, and more. [Message me on WhatsApp](https://wa.me/254718448461) or [send me an email](mailto:haronkibetrutoh@gmail.com) for a quick demo.
 >
-> - 📋 **[KundiPost](https://chromewebstore.google.com/detail/kundipost-%E2%80%93-facebook-grou/lphjckpophfkedacijahclaoenhikcgo)** — Save and reuse content, publish to Facebook Groups and Marketplace with paced queues, rewrite content with Gemini, and clean up old Marketplace listings—all from a Chrome side panel.
+> - 📋 **[Postika Chrome Extension](https://chromewebstore.google.com/detail/kundipost-%E2%80%93-facebook-grou/lphjckpophfkedacijahclaoenhikcgo)** — Save and reuse content, publish to Facebook Groups and Marketplace with paced queues, rewrite content with Gemini, and clean up old Marketplace listings—all from a Chrome side panel.
+>
+> - 🖥️ **[Postika Desktop App — Facebook Groups Bulk Poster](https://postika.softwrhq.com/)** — Reach more Facebook groups with less repetitive work. Write your post, add images, choose your groups, and post now or schedule for later. Manage multiple accounts, set the time between posts, and track results in posting logs. Available for Windows, macOS, and Linux. [Explore Postika and download the desktop app](https://postika.softwrhq.com/).
+>
+> [![Postika desktop app showing the post composer, image uploads, multiple accounts, and the create post, select groups, and post or schedule workflow](docs/images/postika-desktop-app.png)](https://postika.softwrhq.com/)
 
 ---
 
